@@ -1,7 +1,14 @@
+import TaskForm from "./components/TaskForm";
 export default function Home() {
   return (
-    <>
-      <h1>Namaste EveryOne!</h1>
-    </>
+    <div className="full-screen"style = {{
+      height: '100vh',
+      width: '100vw',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center'
+    }}>
+      <TaskForm />
+    </div>
   );
 }
