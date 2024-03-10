@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useState } from 'react';
@@ -26,24 +25,24 @@ const TaskForm = () => {
   };
 
   return (
-    <div className="bg-gray-100 p-6 rounded-md shadow-md">
-      <h2 className="text-xl font-semibold mb-4">Task Information</h2>
+    <div className="bg-slate-200 w-1/4 p-6 rounded-md shadow-md hover:bg-white hover:border-black hover:border-2">
+      <h2 className="text-xl text-center font-bold mb-5">Task Information</h2>
       <form onSubmit={handleSubmit}>
         <div className="mb-4">
-          <label htmlFor="title" className="block text-sm font-medium text-gray-700">Title</label>
-          <input type="text" id="title" name="title" value={formData.title} onChange={handleChange} className="mt-1 p-2 border rounded-md w-full" required />
+          <label htmlFor="title" className="block text-sm  text-gray-950 font-bold">Title</label>
+          <input type="text" id="title" name="title" value={formData.title} placeholder='New Task...' onChange={handleChange} className="mt-1 p-2 border rounded-md w-full font-semibold" required />
         </div>
         <div className="mb-4">
-          <label htmlFor="description" className="block text-sm font-medium text-gray-700">Description</label>
-          <textarea id="description" name="description" value={formData.description} onChange={handleChange} className="mt-1 p-2 border rounded-md w-full" required />
+          <label htmlFor="description" className="block text-sm text-gray-950 font-bold">Description</label>
+          <textarea id="description" name="description" value={formData.description} placeholder='Task description...' onChange={handleChange} className="mt-1 p-2 border rounded-md w-full font-semibold" required />
         </div>
         <div className="mb-4">
-          <label htmlFor="deadline" className="block text-sm font-medium text-gray-700">Deadline</label>
-          <input type="date" id="deadline" name="deadline" value={formData.deadline} onChange={handleChange} className="mt-1 p-2 border rounded-md w-full" required />
+          <label htmlFor="deadline" className="block text-sm text-gray-950 font-bold">Deadline</label>
+          <input type="date" id="deadline" name="deadline" value={formData.deadline} onChange={handleChange} className="mt-1 p-2 border rounded-md w-full font-semibold" required />
         </div>
         <div className="mb-4">
-          <label htmlFor="phase" className="block text-sm font-medium text-gray-700">Phase</label>
-          <select id="phase" name="phase" value={formData.phase} onChange={handleChange} className="mt-1 p-2 border rounded-md w-full" required>
+          <label htmlFor="phase" className="block text-sm text-gray-950 font-bold">Phase</label>
+          <select id="phase" name="phase" value={formData.phase} onChange={handleChange} className="mt-1 p-2 border rounded-md w-full font-semibold" required>
             <option value="new">New</option>
             <option value="UI/UX">UI/UX</option>
             <option value="development">Development</option>
@@ -52,11 +51,11 @@ const TaskForm = () => {
             <option value="Released">Released</option>
           </select>
         </div>
-        <div className="mb-4">
-          <label htmlFor="assignTo" className="block text-sm font-medium text-gray-700">Assign To</label>
-          <input type="text" id="assignTo" name="assignTo" value={formData.assignTo} onChange={handleChange} className="mt-1 p-2 border rounded-md w-full" required />
+        <div className="mb-5">
+          <label htmlFor="assignTo" className="block text-sm text-gray-950 font-bold">Assign To</label>
+          <input type="text" id="assignTo" name="assignTo" placeholder='johndoe@gmail.com' value={formData.assignTo} onChange={handleChange} className="mt-1 p-2 border rounded-md w-full font-semibold" required />
         </div>
-        <button type="submit" className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600">Submit</button>
+        <button type="submit" className="bg-black w-full text-white px-4 py-2 rounded-md hover:bg-white hover:text-black hover:border-black hover:border-2 font-semibold">Submit</button>
       </form>
     </div>
   );
