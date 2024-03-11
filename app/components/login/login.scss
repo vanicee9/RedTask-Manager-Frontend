@@ -1,0 +1,45 @@
+$bg-clr: rgba(145, 129, 244, 1);
+$icon-margin: 5% 2%;
+
+
+.container{
+    display: flex ;
+    height:90vh;
+    margin:2%;
+    border-radius: 5%;
+    
+    
+}
+.leftSide{
+   
+    width:50%;
+    height:inherit;
+      background-color: bisque;
+}
+.login-details{
+    margin:10%;
+    padding:15%;
+}
+
+#username{
+    display: flex;
+   
+}
+
+
+#password{
+    display: flex;
+}
+#btn{
+    margin-top:5%;
+}
+.rightSide{
+    width:50%;
+    background-color:$bg-clr;
+  
+
+}
+    
+
+
+
