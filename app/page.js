@@ -1,4 +1,6 @@
-import TaskForm from "./components/TaskForm";
+// import TaskForm from "./components/TaskForm";
+import LoginForm from "./components/LoginForm";
+import SignUpForm from "./components/SignUpForm";
 export default function Home() {
   return (
     <div className="full-screen"style = {{
@@ -8,7 +10,9 @@ export default function Home() {
       alignItems: 'center',
       justifyContent: 'center'
     }}>
-      <TaskForm />
+      {/* <TaskForm /> */}
+      <LoginForm/>
+      <SignUpForm/>
     </div>
   );
-}
+}     

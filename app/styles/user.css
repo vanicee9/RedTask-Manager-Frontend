@@ -1,0 +1,13 @@
+.container {
+  background-color: blue;
+  display: flex;
+  margin: 10%;
+}
+
+#username {
+  display: flex;
+}
+
+#right-banner {
+  background-color: pink;
+}/*# sourceMappingURL=user.css.map */
