@@ -1,0 +1,78 @@
+// TaskForm.scss
+
+
+.task-form {
+    background-color: #1B1F2D;
+    color: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    width: 40%;
+
+
+    h2 {
+      margin-bottom: 30px;
+      color: #86EC92;
+      font-size: 24px;
+      text-align: center;
+    }
+  
+    .form-group {
+      margin-bottom: 20px;
+  
+      label {
+        display: block;
+        margin-bottom: 5px;
+        color: white;
+        font-size: 16px;
+        font-weight: bold;
+      }
+  
+      input,
+      textarea,
+      select {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid grey;
+        border-radius: 4px;
+        background-color: #1B1F2A;
+        color: #86EC92;
+        font-size: 16px;
+        outline: none;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+
+        &:focus {
+            border: 1px solid #86EC92;
+        }
+      }
+  
+      textarea {
+        height: 100px;
+        resize: none;
+      }
+  
+      select {
+        appearance: none;
+        background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"/></svg>');
+        background-repeat: no-repeat;
+        background-position: right 10px top 50%;
+      }
+    }
+  
+    button[type="submit"] {
+        background-color: white;
+        width: 100%;
+        color: black;
+        padding: 12px 20px;
+        border: none;
+        border-radius: 5px;
+        margin-top: 10px;
+        cursor: pointer;
+        font-size: 16px;
+        transition: background-color 0.3s ease-in-out;
+        &:hover {
+            background-color: #86EC92;
+        }
+    }
+  }
+  

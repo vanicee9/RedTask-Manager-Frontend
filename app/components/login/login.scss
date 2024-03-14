@@ -1,45 +1,129 @@
 $bg-clr: rgba(145, 129, 244, 1);
+$light-bg-clr:   rgba(240, 237, 255, 0.8);
+;
 $icon-margin: 5% 2%;
+$bottom-margin : 15px;
+$text-center: center;
+$box-radius: 3rem;
 
 
 .container{
-    display: flex ;
+    display: flex;
     height:90vh;
-    margin:2%;
-    border-radius: 5%;
-    
-    
+    margin:2% 10%;
+    border-radius: $box-radius;
+    box-shadow: 0 0 .9rem rgba(0, 0, 0, 0.7);
+  
+}
+h1{
+    text-align: $text-center;
+    margin: 0; margin-bottom: -10px; 
+}
+p{
+    text-align: $text-center;
+    margin-bottom: 12%;
+    color:grey;
 }
 .leftSide{
    
     width:50%;
     height:inherit;
-      background-color: bisque;
+    border-radius: $box-radius 0 0 $box-radius;
+    padding: 2%;
+    
 }
 .login-details{
     margin:10%;
     padding:15%;
 }
 
-#username{
+#btn {
+    
+        margin-top:8%;
+        padding: 5%;
+        height:35% ; width:35%;
+        margin-left: 33%;
+        background-color: $bg-clr;
+        border-radius : 15px;
+        outline: none;
+        border: none;
+        color:white;
+        font-weight: bold;
+    
+    
+
+}
+
+.user-options{
     display: flex;
+    
+    margin: 5px 0px; padding: 15px;
+    border-radius: 3rem;
+    input{
+        outline: none;
+        border:none;
+        font-size: 18px;
+        margin-left: 4px; padding: 5px;
+        flex-grow: 1;
+        background-color: transparent;
+        caret-shape:bar;
+        &::placeholder {
+            color: rgba(0, 0, 0, 0.817);
+        }
+    }
+    .icons{
    
+      padding: 5px;
+    }
+}
+#username {
+    margin-bottom: $bottom-margin;
+    background-color: $light-bg-clr;
+}
+#password {
+    background-color: $light-bg-clr;
+
 }
 
 
-#password{
-    display: flex;
-}
-#btn{
-    margin-top:5%;
-}
+
+
+
+
 .rightSide{
     width:50%;
     background-color:$bg-clr;
-  
-
-}
+    display:grid;
+    padding: 2%;
     
+    place-items: center;
+    border-radius: 0 $box-radius $box-radius 0;
+    #inner-div{
+        position: relative;
+        width: 65%;
+        height: 75%;
+        background-color: #fff;
+        border-radius: 10%;
+        background-color: rgba(255, 255, 255, 0.3);
+        border: 1px solid white;
+        p{
+            width:50%;
+            font-weight: 700;
+            margin-left: 2% ;
+            font-size: 2.5rem;
+            padding:12px;
+            color:white;
+            text-align: start;
+            line-height: 55px;
+        }
+        #girl {
+            height:95%;
+            position: absolute;
+            bottom: 0; left: -49%;
+           
+        }
+   }
+}
 
 
 
