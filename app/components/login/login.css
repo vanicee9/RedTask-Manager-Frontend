@@ -1,0 +1,25 @@
+.container {
+  display: flex;
+  justify-content: space-around;
+  background-color: blue;
+  margin: 2rem auto;
+  width: 75vw;
+  height: 90vh;
+}
+.container .leftSide {
+  background: rgb(209, 201, 201);
+  width: 20%;
+  margin-left: -461px;
+}
+
+#username {
+  display: flex;
+}
+
+#password {
+  display: flex;
+}
+
+#btn {
+  margin-top: 5%;
+}/*# sourceMappingURL=login.css.map */

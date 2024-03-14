@@ -1,8 +1,14 @@
+import LoginForm from '@/app/components/login/LoginForm'
+// import Head from 'next/head'
 import React from 'react'
-import LoginForm from '@/app/components/LoginForm'
+
+
 
 export default function page() {
   return (
-   <LoginForm/>
+    
+    <> <LoginForm/></>
+     
+   
   )
 }
