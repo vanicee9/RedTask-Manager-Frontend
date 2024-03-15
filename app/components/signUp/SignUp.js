@@ -1,5 +1,5 @@
 import React from 'react'
-import { FaLock, FaUserAlt } from 'react-icons/fa';
+import { FaLock} from 'react-icons/fa';
 import { MdLocalPhone } from "react-icons/md";
 import { MdEmail } from "react-icons/md";
 import './signup.scss'
