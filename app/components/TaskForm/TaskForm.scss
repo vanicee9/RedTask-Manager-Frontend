@@ -1,4 +1,5 @@
 // TaskForm.scss
+$bg-clr: rgba(145, 129, 244, 1);
 
 .task-form {
     position: absolute;
@@ -61,9 +62,10 @@
     }
   
     button[type="submit"] {
-        background-color: red;
+        background-color: $bg-clr;
         width: 100%;
         color: white;
+        font-weight: 800;
         padding: 12px 20px;
         border: none;
         border-radius: 5px;
@@ -72,7 +74,7 @@
         font-size: 16px;
         transition: background-color 0.3s ease-in-out;
         &:hover {
-            background-color: darkred;
+            background-color: rgb(89, 67, 228);
 
         }
     }
