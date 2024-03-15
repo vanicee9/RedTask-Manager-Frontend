@@ -20,7 +20,7 @@ h1{
 }
 p{
     text-align: $text-center;
-    margin-bottom: 8%;
+    margin-bottom: 6%;
     color:grey;
 }
 .leftSide{
@@ -41,23 +41,22 @@ p{
         margin-top:8%;
         padding: 5%;
         height:35% ; width:35%;
-        margin-left: 33%;
+        margin-left: 30%;
         background-color: $bg-clr;
         border-radius : 15px;
         outline: none;
         border: none;
         color:white;
-        font-weight: bold;
-    
-    
+        font-weight:bolder;
 
 }
 
 .user-options{
     display: flex;
-    
-    margin: 5px 0px; padding: 15px;
+    margin: 14px 0px; padding: 15px;
     border-radius: 3rem;
+    background-color: $light-bg-clr;
+
     input{
         outline: none;
         border:none;
@@ -80,15 +79,6 @@ p{
     margin-bottom: $bottom-margin;
     background-color: $light-bg-clr;
 }
-#password {
-    background-color: $light-bg-clr;
-
-}
-
-
-
-
-
 
 .rightSide{
     width:50%;
