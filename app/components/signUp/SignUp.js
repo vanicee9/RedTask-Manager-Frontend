@@ -9,7 +9,7 @@ export default function SignUp() {
     <div className="container">
       <div className="leftSide">
         <div className="login-details">
-          <h1>SIGNUP</h1>
+          <h2>SIGNUP</h2>
           <p>How I get started lorem ipsum door at?</p>
 
           <div id="username" className="user-options">
