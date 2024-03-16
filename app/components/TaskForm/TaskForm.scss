@@ -1,20 +1,22 @@
 // TaskForm.scss
-
+$bg-clr: rgba(145, 129, 244, 1);
 
 .task-form {
-    background-color: #1B1F2D;
-    color: #fff;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
     padding: 20px;
     border-radius: 10px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    box-shadow: 1px 4px 6px rgba(0.1, 0.1, 0.1, 0.1);
     width: 40%;
+    opacity: 90%;
 
 
     h2 {
       margin-bottom: 30px;
-      color: #86EC92;
       font-size: 24px;
-      text-align: center;
+      // color: white;
     }
   
     .form-group {
@@ -23,9 +25,9 @@
       label {
         display: block;
         margin-bottom: 5px;
-        color: white;
         font-size: 16px;
         font-weight: bold;
+        // color: white;
       }
   
       input,
@@ -33,16 +35,16 @@
       select {
         width: 100%;
         padding: 10px;
-        border: 1px solid grey;
+        border: 1px solid gray;
         border-radius: 4px;
-        background-color: #1B1F2A;
-        color: #86EC92;
+        background: none;
         font-size: 16px;
         outline: none;
         box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 
         &:focus {
-            border: 1px solid #86EC92;
+            border: none;
+            outline: 2px solid red;
         }
       }
   
@@ -60,9 +62,10 @@
     }
   
     button[type="submit"] {
-        background-color: white;
+        background-color: $bg-clr;
         width: 100%;
-        color: black;
+        color: white;
+        font-weight: 800;
         padding: 12px 20px;
         border: none;
         border-radius: 5px;
@@ -71,7 +74,8 @@
         font-size: 16px;
         transition: background-color 0.3s ease-in-out;
         &:hover {
-            background-color: #86EC92;
+            background-color: rgb(89, 67, 228);
+
         }
     }
   }

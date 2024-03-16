@@ -14,13 +14,13 @@ $box-radius: 3rem;
     box-shadow: 0 0 .9rem rgba(0, 0, 0, 0.7);
   
 }
-h1{
+h2{
     text-align: $text-center;
     margin: 0; margin-bottom: 0px; 
 }
 p{
     text-align: $text-center;
-    margin-bottom: 6%;
+    margin-bottom: 8%;
     color:grey;
 }
 .leftSide{
@@ -29,38 +29,46 @@ p{
     height:inherit;
     border-radius: $box-radius 0 0 $box-radius;
     padding: 2%;
+    display: flex;
+    flex-direction: column;  
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    overflow: hidden;
+
     
 }
 .login-details{
-    margin:10%;
-    padding:15%;
+
+    width: 80%;
 }
 
 #btn {
     
         margin-top:8%;
         padding: 5%;
-        height:35% ; width:35%;
-        margin-left: 30%;
+        height:35% ;
+        margin-left: 33%;
         background-color: $bg-clr;
         border-radius : 15px;
         outline: none;
         border: none;
         color:white;
-        font-weight:bolder;
+        font-weight: bold;
+    
+    
 
 }
 
 .user-options{
     display: flex;
-    margin: 14px 0px; padding: 15px;
+    
+    margin: 5px 0px; padding: 15px;
     border-radius: 3rem;
-    background-color: $light-bg-clr;
-
     input{
         outline: none;
         border:none;
-        font-size: 18px;
+        font-size: 14px;
         margin-left: 4px; padding: 5px;
         flex-grow: 1;
         background-color: transparent;
@@ -75,33 +83,52 @@ p{
       margin-top: 2%;
     }
 }
+<<<<<<< HEAD
 #user{
+=======
+.user-options {
+>>>>>>> 96dc46addf795d11cebd966410a7210a84602231
     margin-bottom: $bottom-margin;
     background-color: $light-bg-clr;
 }
+#password {
+    background-color: $light-bg-clr;
+}
+
+
+
+
+
 
 .rightSide{
     width:50%;
     background-color:$bg-clr;
-    display:grid;
+    // display:grid;
+    display: flex;
+    justify-content: center;
+    align-items: center;
     padding: 2%;
+    position: relative;
+    overflow: hidden;
     
-    place-items: center;
+    // place-items: center;
     border-radius: 0 $box-radius $box-radius 0;
     #inner-div{
         position: relative;
-        width: 65%;
-        height: 75%;
+        width: 75%;
+        height: 80%;
+        // overflow: hidden;
         background-color: #fff;
-        border-radius: 10%;
+        border-radius: 10%; 
         background-color: rgba(255, 255, 255, 0.3);
         border: 1px solid white;
-        p{
-            width:50%;
+        p   {
+            width:60%;
+            height: fit-content;
             font-weight: 700;
             margin-top: 10%;
             margin-left: 2% ;
-            font-size: 2.5rem;
+            font-size: 2.0rem;
             padding:13px;
             color:white;
             text-align: start;
@@ -110,7 +137,7 @@ p{
         #girl {
             height:95%;
             position: absolute;
-            bottom: 0; left: -48%;
+            bottom: 0; left: 45%;
            
         }
    }
