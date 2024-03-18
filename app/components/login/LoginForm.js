@@ -1,6 +1,7 @@
 import { FaUserAlt, FaLock } from "react-icons/fa";
 import "./login.scss";
 function LoginForm() {
+ 
   return (
     <div className="container">
       <div className="leftSide">
