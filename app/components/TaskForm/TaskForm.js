@@ -1,8 +1,17 @@
 "use client"
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import './TaskForm.scss';
+import Spinner from '../Spinner';
+const EMAIL_REGEX = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|.(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 
 const TaskForm = () => {
+
+  const [loading, setLoading] = useState(true);
+
+
+
+
+
   const [formData, setFormData] = useState({
     title: '',
     description: '',
@@ -10,6 +19,62 @@ const TaskForm = () => {
     phase: 'New',
     assignTo: ''
   });
+
+  const [errorObject, setErrorObject] = useState({
+    title_error: '',
+    description_error: '',
+    deadline_error: '',
+    phase_error: '',
+    assignTo_error: '',
+  })
+
+  
+
+
+
+  function handleValidation(event){
+    const {name, value} = event.target;
+    let ok = true;
+    if(['title', 'description'].includes(name)) {
+      if(!value){
+        setErrorObject((prev) => ({
+          ...prev,
+          [`${name}_error`]: `${name} required`
+        }))
+        ok = false;
+      }
+    }
+    else if(name === 'deadline') {
+      if(!value || value < new Date()) {
+        setErrorObject((prev) => ({
+          ...prev,
+          [`${name}_error`]: 'Present or future date required'
+        }))
+        ok = false;
+      }
+    }
+    else if (name === 'assignTo') {
+      if(!value || !value.match(EMAIL_REGEX)) {
+        setErrorObject((prev) => ({
+          ...prev,
+          [`${name}_error`]: 'email not valid'
+        }))
+        ok = false;
+      }
+    }
+    
+
+
+    if(ok){
+      setErrorObject((prev) => ({
+        ...prev,
+        [`${name}_error`]: ''
+      }))
+    }
+
+    return ok;
+  }
+
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -30,7 +95,7 @@ const TaskForm = () => {
               <h2>Task Information</h2>
               <form onSubmit={handleSubmit}>
                 <div className="form-group">
-                  <label htmlFor="title">Title</label>
+                  <label  htmlFor="title">Title</label>
                   <input 
                     type="text" 
                     id="title" 
@@ -38,7 +103,9 @@ const TaskForm = () => {
                     value={formData.title}
                     onChange={handleChange} 
                     placeholder="New Task..."
+                    onBlur={handleValidation}
                   />
+                  <div className="error-container" name="title_error" id="title-error">{errorObject.title_error}</div>
                 </div>
                 <div className="form-group">
                   <label htmlFor="description">Description</label>
@@ -48,7 +115,10 @@ const TaskForm = () => {
                     value={formData.description}
                     onChange={handleChange}
                     placeholder="Task description..."
+                    onBlur={handleValidation}
+
                   ></textarea>
+                  <div className="error-container" name="description_error" id="description-error">{errorObject.description_error}</div>
                 </div>
                 <div className="form-group">
                   <label htmlFor="deadline">Deadline Date</label>
@@ -58,7 +128,9 @@ const TaskForm = () => {
                     name="deadline" 
                     value={formData.deadline}
                     onChange={handleChange} 
+                    onBlur={handleValidation}
                   />
+                  <div className="error-container" name="deadline_error" id="deadline-error">{errorObject.deadline_error}</div>
                 </div>
                 <div className="form-group">
                   <label htmlFor="phase">Phase</label>
@@ -67,6 +139,7 @@ const TaskForm = () => {
                     name="phase" 
                     value={formData.phase}
                     onChange={handleChange}
+                    onBlur={handleValidation}
                   >
                     <option value="New">New</option>
                     <option value="UI/UX">UI/UX</option>
@@ -75,6 +148,7 @@ const TaskForm = () => {
                     <option value="UAT">UAT</option>
                     <option value="Released">Released</option>
                   </select>
+                  <div className="error-container" name="phase_error" id="phase-error">{errorObject.phase_error}</div>
                 </div>
                 <div className="form-group">
                   <label htmlFor="assignTo">Assign To</label>
@@ -85,9 +159,15 @@ const TaskForm = () => {
                     value={formData.assignTo}
                     onChange={handleChange} 
                     placeholder="johndoe@gmail.com"
+                    onBlur={handleValidation}
                   />
+                  <div className="error-container" name="assignTo_error" id="assignTo-error">{errorObject.assignTo_error}</div>
                 </div>
-                <button type="submit">Submit</button>
+                <button type="submit">
+                  {
+                    loading ? <Spinner color={"#fff"} height={"25"} width={"25"}/> : "Submit"
+                  }
+                </button>
               </form>
             </div>
       </div>
