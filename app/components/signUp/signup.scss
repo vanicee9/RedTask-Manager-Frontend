@@ -46,8 +46,8 @@ p{
 #btn {
     
         margin-top:8%;
-        padding: 5%;
-        height:35% ;
+        padding: 3%;
+        height:30% ;
         margin-left: 33%;
         background-color: $bg-clr;
         border-radius : 15px;
@@ -55,15 +55,17 @@ p{
         border: none;
         color:white;
         font-weight: bold;
+        font-size:large;
     
     
 
 }
 
 .user-options{
-    display: flex;
-    
-    margin: 5px 0px; padding: 15px;
+    display: flex;  
+    background-color:$light-bg-clr ;
+    margin: 14px 2px;
+     padding: 22px;
     border-radius: 3rem;
     input{
         outline: none;
@@ -71,28 +73,30 @@ p{
         font-size: 14px;
         margin-left: 4px; padding: 5px;
         flex-grow: 1;
-        background-color: transparent;
-        caret-shape:bar;
+        background-color: $light-bg-clr;
+        caret-shape: bar;
         &::placeholder {
             color: rgba(0, 0, 0, 0.817);
+            font-size: medium;
         }
     }
     .icons{
    
-      padding: -5px;
-      margin-top: 2%;
+
+      margin-top: 1%;
+      
     }
 }
-.user-options {
-    margin-bottom: $bottom-margin;
-    background-color: $light-bg-clr;
-}
+
+
+// .user-options {
+
+//     margin-bottom: $bottom-margin;
+//     background-color: $light-bg-clr;
+// }
 #password {
     background-color: $light-bg-clr;
 }
-
-
-
 
 
 
