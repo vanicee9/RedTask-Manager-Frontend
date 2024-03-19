@@ -2,34 +2,45 @@
 import React, { useEffect, useState } from 'react';
 import './TaskForm.scss';
 import Spinner from '../Spinner';
+import useDebounceSearch from '@/app/utils/useDebouncedSearch';
 const EMAIL_REGEX = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|.(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-
-const TaskForm = () => {
-
-  const [loading, setLoading] = useState(true);
-
-
-
-
+const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
+const VERSION = process.env.NEXT_PUBLIC_VERSION;
+export default function TaskForm({taskCard}) {
 
   const [formData, setFormData] = useState({
+    id: '',
     title: '',
     description: '',
     deadline: '',
     phase: 'New',
-    assignTo: ''
+    assignTo: '',
+    assignFrom: '',
   });
-
   const [errorObject, setErrorObject] = useState({
     title_error: '',
     description_error: '',
     deadline_error: '',
     phase_error: '',
     assignTo_error: '',
-  })
+  }) 
+  const [loading, setLoading] = useState(true);
 
-  
 
+  const debouncedSearchValue = useDebounceSearch(formData.assignTo);
+  useEffect(() => {
+    fetch(`${BASE_URL}${VERSION}/users/findByEmail/${debouncedSearchValue}`)
+    .then((response) => response.json())
+    .then((response) => console.log(response))
+    .catch((error) => {
+      console.log("Something went wrong while fetching");
+      console.log(error);
+    })
+  },[debouncedSearchValue])
+
+  useEffect(() => {
+    if(Object.keys(taskCard).length > 0) setFormData(taskCard)
+  },[taskCard])
 
 
   function handleValidation(event){
@@ -74,7 +85,6 @@ const TaskForm = () => {
 
     return ok;
   }
-
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -173,5 +183,3 @@ const TaskForm = () => {
       </div>
   );
 }
-
-export default TaskForm;
