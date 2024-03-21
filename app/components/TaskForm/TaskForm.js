@@ -4,7 +4,9 @@ import "./TaskForm.scss";
 import Spinner from "../Spinner";
 import { IoMdCloseCircle } from "react-icons/io";
 import useDebounceSearch from "@/app/utils/useDebouncedSearch";
-import ErrorModal from "../ErrorModal/ErrorModal";
+import { RiErrorWarningLine } from "react-icons/ri";
+import { FaCheckCircle } from "react-icons/fa";
+import Modal from "../Modal/Modal";
 const EMAIL_REGEX =
   /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|.(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
@@ -19,36 +21,37 @@ const user ={
 }
 
 
-export default function TaskForm({ taskCard, taskFormclosingFunction, adding, updating }) {
+export default function TaskForm({ taskCard, setTaskFormOpenFlag, adding, updating, setSuccess }) {
 
   // For handling form data and showing error
   const [formData, setFormData] = useState({
     id: "",
     title: "",
     description: "",
-    deadline: "",
+    deadlineDate: "",
     phase: "New",
-    assignTo: "",
-    assignFrom: "",
+    assignedTo: "",
+    assignedFrom: "",
   });
   const [errorObject, setErrorObject] = useState({
     title_error: "",
     description_error: "",
-    deadline_error: "",
+    deadlineDate_error: "",
     phase_error: "",
-    assignTo_error: "",
+    assignedTo_error: "",
   });
   const [loading, setLoading] = useState(false);
 
   // For opening and closing of ErrorModal
-  const [errorModalObject, setErrorModalObject] = useState({});
-  const [openErrorModal, setOpenErrorModal] = useState(false);
+  const [modalObject, setModalObject] = useState({});
+  const [openModal, setOpenModal] = useState(false);
 
-  // For Debouncing the results of assignTo
+  // For Debouncing the results of assignedTo
   const [userEmails, setUserEmails] = useState([]);
-  const debouncedSearchValue = useDebounceSearch(formData.assignTo);
+  const debouncedSearchValue = useDebounceSearch(formData.assignedTo);
   useEffect(() => {
-    fetch(`${BASE_URL}${VERSION}/users/findByEmail/${debouncedSearchValue}`)
+    if(!debouncedSearchValue) return;
+    fetch(`${BASE_URL}/${VERSION}/users/findByEmail/${debouncedSearchValue}`)
       .then((response) => response.json())
       .then((response) => {
         console.log(response);
@@ -86,10 +89,10 @@ export default function TaskForm({ taskCard, taskFormclosingFunction, adding, up
     }
     return ok;
   }
-  function handleDeadline(event) {
+  function handleDeadlineDate(event) {
     const { name, value } = event.target;
     let ok = true;
-    if (name === "deadline") {
+    if (name === "deadlineDate") {
       if (!value || value < new Date()) {
         setErrorObject((prev) => ({
           ...prev,
@@ -106,10 +109,10 @@ export default function TaskForm({ taskCard, taskFormclosingFunction, adding, up
     }
     return ok;
   }
-  function handleAssignTo(event) {
+  function handleAssignedTo(event) {
     const { name, value } = event.target;
     let ok = true;
-    if (name === "assignTo") {
+    if (name === "assignedTo") {
       if (!value || !value.match(EMAIL_REGEX)) {
         setErrorObject((prev) => ({
           ...prev,
@@ -130,55 +133,69 @@ export default function TaskForm({ taskCard, taskFormclosingFunction, adding, up
   async function handleValidation(event) {
     let ok = true;
     // Making sure every condition mets
-    ok &= handleTitleAndDescription({
+    ok = ok && handleTitleAndDescription({
       target: {
         name: "title",
         value: formData.title,
       },
     });
-    ok &= handleTitleAndDescription({
+    ok = ok && handleTitleAndDescription({
       target: {
         name: "description",
         value: formData.description,
       },
     });
-    ok &= handleDeadline({
+    ok = ok && handleDeadlineDate({
       target: {
-        name: "deadline",
-        value: formData.deadline,
+        name: "deadlineDate",
+        value: formData.deadlineDate,
       },
     });
-    ok &= handleAssignTo({
+    ok = ok && handleAssignedTo({
       target: {
-        name: "assignTo",
-        value: formData.assignTo,
+        name: "assignedTo",
+        value: formData.assignedTo,
       },
     });
 
-    // Checking if email in assignTo is valid?
+    if(!ok) {
+      setModalObject({
+        title: 'Error!',
+        description: 'Please fill all the fields',
+        Icon: IoMdCloseCircle,
+        color: "red",
+      })
+      setOpenModal(true);
+      return ok;
+    }
+
+    // Checking if email in assignedTo is valid?
     try {
       let response = await fetch(
-        `${BASE_URL}/${VERSION}/users/validateUserByEmail/${formData.assignTo}`
+        `${BASE_URL}/${VERSION}/users/validateUserByEmail/${formData.assignedTo}`
       );
       response = await response.json();
       console.log(response);
       if (response && response.success === false) {
-        setErrorModalObject({
+        setModalObject({
           title: 'user not found!',
-          description: 'Email in assign to does not belong to any account!'
+          description: 'Email in Assign To does not belong to any account!',
+          Icon: IoMdCloseCircle,
+          color: "red",
         })
-        setOpenErrorModal(true);
+        setOpenModal(true);
+        ok = false;
       }
     } catch (error) {
-      setErrorModalObject({
+      setModalObject({
           title: error.name,
-          description: error.description,
-        })
+          description: error.message,
+          Icon: IoMdCloseCircle,
+          color: 'red',
+      })
       console.log(error);
+      setOpenModal(true);
       ok = false;
-    }
-    finally{
-      setOpenErrorModal(true);
     }
 
     return ok;
@@ -196,63 +213,92 @@ export default function TaskForm({ taskCard, taskFormclosingFunction, adding, up
     event.preventDefault();
 
     // checking for all validations before submitting
-    if (!handleValidation()) return false;
+    const ok = await handleValidation();
+    if (!ok) return false;
 
     if(adding) {
+      setLoading(true);
       try {
         let response = await fetch(`${BASE_URL}/${VERSION}/tasks/`,{
           method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
           body: JSON.stringify({
             title: formData.title,
             description: formData.description,
-            deadline: formData.deadline,
+            deadlineDate: formData.deadlineDate,
             phase: formData.phase,
-            assignToMail: formData.assignTo,
-            assignFromMail: user.email,
+            assignedToMail: formData.assignedTo,
+            assignedFromMail: user.email,
           })
         })
-
-        response = response.json();
+        response = await response.json();
         console.log(response);
-      } catch (error) {
+        setSuccess(true);
+        setTaskFormOpenFlag(false);
+      } 
+      catch (error) {
         console.log("Something went wrong while adding new Task!");
-        setErrorModalObject({
+        setModalObject({
+          Icon: IoMdCloseCircle,
           title: error.name || 'Unknown Error',
           description: error.description,
+          color: "red",
         })
-        setOpenErrorModal(true);
+        setOpenModal(true);
+      }
+      finally{
+        setLoading(false);
       }
     }
     else if(updating) {
       try {
+        setLoading(true);
         let response = await fetch(`${BASE_URL}/${VERSION}/tasks/${user.id}`,{
           method: 'PATCH',
           body: JSON.stringify({
             title: formData.title,
             description: formData.description,
-            deadline: formData.deadline,
+            deadlineDate: formData.deadlineDate,
             phase: formData.phase,
-            assignToMail: formData.assignTo,
-            assignFromMail: user.email,
+            assignedToMail: formData.assignedTo,
+            assignedFromMail: user.email,
           })
         })
 
-        response = response.json();
+        response = await response.json();
         console.log(response);
-      } catch (error) {
-        
+        setSuccess(true);
+        setTaskFormOpenFlag(false);
+
+      } 
+      catch (error) {
+        console.log("Something went wrong while updating Task.");
+        setModalObject({
+          Icon: IoMdCloseCircle,
+          title: error.name,
+          description: error.description,
+          color: "error"
+        })
+        setOpenModal(true);
+      }
+      finally {
+        setLoading(false);
       }
     }
   }
 
   return (
     <Fragment>
-      {openErrorModal ? (
+      {openModal ? (
         <>
-          <ErrorModal
-            errorTitle={errorModalObject.title}
-            errorDescription={errorModalObject.description}
-            open={setOpenErrorModal}
+          <Modal
+            Icon={modalObject.Icon}
+            title={modalObject.title}
+            description={modalObject.description}
+            color={modalObject.color}
+            open={setOpenModal}
           />
         </>
       ) : (
@@ -261,10 +307,15 @@ export default function TaskForm({ taskCard, taskFormclosingFunction, adding, up
 
       <div className="blur-background">
         <div className="task-form">
-          <div className="close-button" onClick={() => taskFormclosingFunction(false)}>
-            <IoMdCloseCircle />
+          <div className="top-header">
+            <h2>Task Information</h2>
+            <div className="close-button" onClick={(event) => {
+              event.stopPropagation();
+              setTaskFormOpenFlag(false)
+            }}>
+              <IoMdCloseCircle />
+            </div>
           </div>
-          <h2>Task Information</h2>
           <form onSubmit={handleSubmit}>
             <div className="form-group">
               <label htmlFor="title">Title</label>
@@ -276,6 +327,7 @@ export default function TaskForm({ taskCard, taskFormclosingFunction, adding, up
                 onChange={handleChange}
                 placeholder="New Task..."
                 onBlur={handleTitleAndDescription}
+                disabled={loading}
               />
               <div
                 className="error-container"
@@ -294,6 +346,7 @@ export default function TaskForm({ taskCard, taskFormclosingFunction, adding, up
                 onChange={handleChange}
                 placeholder="Task description..."
                 onBlur={handleTitleAndDescription}
+                disabled={loading}
               ></textarea>
               <div
                 className="error-container"
@@ -304,21 +357,22 @@ export default function TaskForm({ taskCard, taskFormclosingFunction, adding, up
               </div>
             </div>
             <div className="form-group">
-              <label htmlFor="deadline">Deadline Date</label>
+              <label htmlFor="deadlineDate">Deadline</label>
               <input
                 type="date"
-                id="deadline"
-                name="deadline"
-                value={formData.deadline}
+                id="deadlineDate"
+                name="deadlineDate"
+                value={formData.deadlineDate}
                 onChange={handleChange}
-                onBlur={handleDeadline}
+                onBlur={handleDeadlineDate}
+                disabled={loading}
               />
               <div
                 className="error-container"
-                name="deadline_error"
-                id="deadline-error"
+                name="deadlineDate_error"
+                id="deadlineDate-error"
               >
-                {errorObject.deadline_error}
+                {errorObject.deadlineDate_error}
               </div>
             </div>
             <div className="form-group">
@@ -328,6 +382,7 @@ export default function TaskForm({ taskCard, taskFormclosingFunction, adding, up
                 name="phase"
                 value={formData.phase}
                 onChange={handleChange}
+                disabled={loading}
               >
                 <option value="New">New</option>
                 <option value="UI/UX">UI/UX</option>
@@ -345,17 +400,18 @@ export default function TaskForm({ taskCard, taskFormclosingFunction, adding, up
               </div>
             </div>
             <div className="form-group">
-              <label htmlFor="assignTo">Assign To</label>
+              <label htmlFor="assignedTo">Assign To</label>
               <input
                 type="text"
-                id="assignTo"
-                name="assignTo"
-                value={formData.assignTo}
+                id="assignedTo"
+                name="assignedTo"
+                value={formData.assignedTo}
                 onChange={handleChange}
                 placeholder="johndoe@gmail.com"
-                onBlur={handleAssignTo}
+                onBlur={handleAssignedTo}
                 list={"suggestion"}
                 autoComplete="false"
+                disabled={loading}
               />
               <datalist id="suggestion">
                 {userEmails.length > 0 &&
@@ -369,13 +425,13 @@ export default function TaskForm({ taskCard, taskFormclosingFunction, adding, up
               </datalist>
               <div
                 className="error-container"
-                name="assignTo_error"
-                id="assignTo-error"
+                name="assignedTo_error"
+                id="assignedTo-error"
               >
-                {errorObject.assignTo_error}
+                {errorObject.assignedTo_error}
               </div>
             </div>
-            <button type="submit">
+            <button type="submit" disabled={loading}>
               {loading ? (
                 <Spinner color={"#fff"} height={"20"} width={"20"} />
               ) : (

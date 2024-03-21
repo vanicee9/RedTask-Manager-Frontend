@@ -24,16 +24,21 @@ $bg-clr: rgba(145, 129, 244, 1);
       background-color: white;
       font-size: 25px;
 
-    .close-button {
-      position: absolute;
-      left: 94%;
-      top: 3%;
-      cursor: pointer;
+    
+    .top-header {
+      display: flex;
+      justify-content: space-between;
+
+      h2 {
+        margin-bottom: 30px;
+        font-size: 24px;
+      }
+
+      .close-button {
+        cursor: pointer;
+      }
     }
-    h2 {
-      margin-bottom: 30px;
-      font-size: 24px;
-    }
+
   
     .form-group {
       margin-bottom: 20px;
