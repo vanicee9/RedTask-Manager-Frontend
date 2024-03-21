@@ -1,13 +1,27 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { Fragment, useEffect, useState } from "react";
 import "./TaskForm.scss";
 import Spinner from "../Spinner";
+import { IoMdCloseCircle } from "react-icons/io";
 import useDebounceSearch from "@/app/utils/useDebouncedSearch";
+import ErrorModal from "../ErrorModal/ErrorModal";
 const EMAIL_REGEX =
   /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|.(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
 const VERSION = process.env.NEXT_PUBLIC_VERSION;
-export default function TaskForm({ taskCard }) {
+
+
+// <---------------- For Mocking current user -------------------->
+const user ={
+    id: '65f91e1ca6cc7625ca459e94',
+    name: 'Alice Johnson',
+    email: 'alice@example.com'
+}
+
+
+export default function TaskForm({ taskCard, taskFormclosingFunction, adding, updating }) {
+
+  // For handling form data and showing error
   const [formData, setFormData] = useState({
     id: "",
     title: "",
@@ -24,8 +38,13 @@ export default function TaskForm({ taskCard }) {
     phase_error: "",
     assignTo_error: "",
   });
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
 
+  // For opening and closing of ErrorModal
+  const [errorModalObject, setErrorModalObject] = useState({});
+  const [openErrorModal, setOpenErrorModal] = useState(false);
+
+  // For Debouncing the results of assignTo
   const [userEmails, setUserEmails] = useState([]);
   const debouncedSearchValue = useDebounceSearch(formData.assignTo);
   useEffect(() => {
@@ -33,7 +52,7 @@ export default function TaskForm({ taskCard }) {
       .then((response) => response.json())
       .then((response) => {
         console.log(response);
-        setUserEmails(response.data)
+        setUserEmails(response.data);
       })
       .catch((error) => {
         console.log("Something went wrong while fetching");
@@ -41,11 +60,13 @@ export default function TaskForm({ taskCard }) {
       });
   }, [debouncedSearchValue]);
 
+  // For filling form with passed props data (Edit Mode of Task)
   useEffect(() => {
     if (Object.keys(taskCard).length > 0) setFormData(taskCard);
   }, [taskCard]);
 
-  function handleValidation(event) {
+  // For Showing Small Errors onBur
+  function handleTitleAndDescription(event) {
     const { name, value } = event.target;
     let ok = true;
     if (["title", "description"].includes(name)) {
@@ -56,7 +77,19 @@ export default function TaskForm({ taskCard }) {
         }));
         ok = false;
       }
-    } else if (name === "deadline") {
+    }
+    if (ok) {
+      setErrorObject((prev) => ({
+        ...prev,
+        [`${name}_error`]: "",
+      }));
+    }
+    return ok;
+  }
+  function handleDeadline(event) {
+    const { name, value } = event.target;
+    let ok = true;
+    if (name === "deadline") {
       if (!value || value < new Date()) {
         setErrorObject((prev) => ({
           ...prev,
@@ -64,7 +97,19 @@ export default function TaskForm({ taskCard }) {
         }));
         ok = false;
       }
-    } else if (name === "assignTo") {
+    }
+    if (ok) {
+      setErrorObject((prev) => ({
+        ...prev,
+        [`${name}_error`]: "",
+      }));
+    }
+    return ok;
+  }
+  function handleAssignTo(event) {
+    const { name, value } = event.target;
+    let ok = true;
+    if (name === "assignTo") {
       if (!value || !value.match(EMAIL_REGEX)) {
         setErrorObject((prev) => ({
           ...prev,
@@ -73,153 +118,273 @@ export default function TaskForm({ taskCard }) {
         ok = false;
       }
     }
-
     if (ok) {
       setErrorObject((prev) => ({
         ...prev,
         [`${name}_error`]: "",
       }));
     }
+    return ok;
+  }
+
+  async function handleValidation(event) {
+    let ok = true;
+    // Making sure every condition mets
+    ok &= handleTitleAndDescription({
+      target: {
+        name: "title",
+        value: formData.title,
+      },
+    });
+    ok &= handleTitleAndDescription({
+      target: {
+        name: "description",
+        value: formData.description,
+      },
+    });
+    ok &= handleDeadline({
+      target: {
+        name: "deadline",
+        value: formData.deadline,
+      },
+    });
+    ok &= handleAssignTo({
+      target: {
+        name: "assignTo",
+        value: formData.assignTo,
+      },
+    });
+
+    // Checking if email in assignTo is valid?
+    try {
+      let response = await fetch(
+        `${BASE_URL}/${VERSION}/users/validateUserByEmail/${formData.assignTo}`
+      );
+      response = await response.json();
+      console.log(response);
+      if (response && response.success === false) {
+        setErrorModalObject({
+          title: 'user not found!',
+          description: 'Email in assign to does not belong to any account!'
+        })
+        setOpenErrorModal(true);
+      }
+    } catch (error) {
+      setErrorModalObject({
+          title: error.name,
+          description: error.description,
+        })
+      console.log(error);
+      ok = false;
+    }
+    finally{
+      setOpenErrorModal(true);
+    }
 
     return ok;
   }
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
+  const handleChange = (event) => {
+    const { name, value } = event.target;
     setFormData({
       ...formData,
       [name]: value,
     });
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    console.log(formData);
-  };
+  async function handleSubmit(event) {
+    event.preventDefault();
+
+    // checking for all validations before submitting
+    if (!handleValidation()) return false;
+
+    if(adding) {
+      try {
+        let response = await fetch(`${BASE_URL}/${VERSION}/tasks/`,{
+          method: 'POST',
+          body: JSON.stringify({
+            title: formData.title,
+            description: formData.description,
+            deadline: formData.deadline,
+            phase: formData.phase,
+            assignToMail: formData.assignTo,
+            assignFromMail: user.email,
+          })
+        })
+
+        response = response.json();
+        console.log(response);
+      } catch (error) {
+        console.log("Something went wrong while adding new Task!");
+        setErrorModalObject({
+          title: error.name || 'Unknown Error',
+          description: error.description,
+        })
+        setOpenErrorModal(true);
+      }
+    }
+    else if(updating) {
+      try {
+        let response = await fetch(`${BASE_URL}/${VERSION}/tasks/${user.id}`,{
+          method: 'PATCH',
+          body: JSON.stringify({
+            title: formData.title,
+            description: formData.description,
+            deadline: formData.deadline,
+            phase: formData.phase,
+            assignToMail: formData.assignTo,
+            assignFromMail: user.email,
+          })
+        })
+
+        response = response.json();
+        console.log(response);
+      } catch (error) {
+        
+      }
+    }
+  }
 
   return (
-    <div className="blur-background">
-      <div className="task-form">
-        <h2>Task Information</h2>
-        <form onSubmit={handleSubmit}>
-          <div className="form-group">
-            <label htmlFor="title">Title</label>
-            <input
-              type="text"
-              id="title"
-              name="title"
-              value={formData.title}
-              onChange={handleChange}
-              placeholder="New Task..."
-              onBlur={handleValidation}
-            />
-            <div
-              className="error-container"
-              name="title_error"
-              id="title-error"
-            >
-              {errorObject.title_error}
-            </div>
+    <Fragment>
+      {openErrorModal ? (
+        <>
+          <ErrorModal
+            errorTitle={errorModalObject.title}
+            errorDescription={errorModalObject.description}
+            open={setOpenErrorModal}
+          />
+        </>
+      ) : (
+        ""
+      )}
+
+      <div className="blur-background">
+        <div className="task-form">
+          <div className="close-button" onClick={() => taskFormclosingFunction(false)}>
+            <IoMdCloseCircle />
           </div>
-          <div className="form-group">
-            <label htmlFor="description">Description</label>
-            <textarea
-              id="description"
-              name="description"
-              value={formData.description}
-              onChange={handleChange}
-              placeholder="Task description..."
-              onBlur={handleValidation}
-            ></textarea>
-            <div
-              className="error-container"
-              name="description_error"
-              id="description-error"
-            >
-              {errorObject.description_error}
+          <h2>Task Information</h2>
+          <form onSubmit={handleSubmit}>
+            <div className="form-group">
+              <label htmlFor="title">Title</label>
+              <input
+                type="text"
+                id="title"
+                name="title"
+                value={formData.title}
+                onChange={handleChange}
+                placeholder="New Task..."
+                onBlur={handleTitleAndDescription}
+              />
+              <div
+                className="error-container"
+                name="title_error"
+                id="title-error"
+              >
+                {errorObject.title_error}
+              </div>
             </div>
-          </div>
-          <div className="form-group">
-            <label htmlFor="deadline">Deadline Date</label>
-            <input
-              type="date"
-              id="deadline"
-              name="deadline"
-              value={formData.deadline}
-              onChange={handleChange}
-              onBlur={handleValidation}
-            />
-            <div
-              className="error-container"
-              name="deadline_error"
-              id="deadline-error"
-            >
-              {errorObject.deadline_error}
+            <div className="form-group">
+              <label htmlFor="description">Description</label>
+              <textarea
+                id="description"
+                name="description"
+                value={formData.description}
+                onChange={handleChange}
+                placeholder="Task description..."
+                onBlur={handleTitleAndDescription}
+              ></textarea>
+              <div
+                className="error-container"
+                name="description_error"
+                id="description-error"
+              >
+                {errorObject.description_error}
+              </div>
             </div>
-          </div>
-          <div className="form-group">
-            <label htmlFor="phase">Phase</label>
-            <select
-              id="phase"
-              name="phase"
-              value={formData.phase}
-              onChange={handleChange}
-              onBlur={handleValidation}
-            >
-              <option value="New">New</option>
-              <option value="UI/UX">UI/UX</option>
-              <option value="Development">Development</option>
-              <option value="Testing">Testing</option>
-              <option value="UAT">UAT</option>
-              <option value="Released">Released</option>
-            </select>
-            <div
-              className="error-container"
-              name="phase_error"
-              id="phase-error"
-            >
-              {errorObject.phase_error}
+            <div className="form-group">
+              <label htmlFor="deadline">Deadline Date</label>
+              <input
+                type="date"
+                id="deadline"
+                name="deadline"
+                value={formData.deadline}
+                onChange={handleChange}
+                onBlur={handleDeadline}
+              />
+              <div
+                className="error-container"
+                name="deadline_error"
+                id="deadline-error"
+              >
+                {errorObject.deadline_error}
+              </div>
             </div>
-          </div>
-          <div className="form-group">
-            <label htmlFor="assignTo">Assign To</label>
-            <input
-              type="text"
-              id="assignTo"
-              name="assignTo"
-              value={formData.assignTo}
-              onChange={handleChange}
-              placeholder="johndoe@gmail.com"
-              onBlur={handleValidation}
-              list={'suggestion'}
-              autoComplete="false"
-            />
-            <datalist id="suggestion">
-              {userEmails.length > 0 && userEmails.map((user, index) => {
-                return (
-                  <option key={index} value={user.email}>
-                    {user.name}
-                  </option>
-                );
-              })}
-            </datalist>
-            <div
-              className="error-container"
-              name="assignTo_error"
-              id="assignTo-error"
-            >
-              {errorObject.assignTo_error}
+            <div className="form-group">
+              <label htmlFor="phase">Phase</label>
+              <select
+                id="phase"
+                name="phase"
+                value={formData.phase}
+                onChange={handleChange}
+              >
+                <option value="New">New</option>
+                <option value="UI/UX">UI/UX</option>
+                <option value="Development">Development</option>
+                <option value="Testing">Testing</option>
+                <option value="UAT">UAT</option>
+                <option value="Released">Released</option>
+              </select>
+              <div
+                className="error-container"
+                name="phase_error"
+                id="phase-error"
+              >
+                {errorObject.phase_error}
+              </div>
             </div>
-          </div>
-          <button type="submit">
-            {loading ? (
-              <Spinner color={"#fff"} height={"25"} width={"25"} />
-            ) : (
-              "Submit"
-            )}
-          </button>
-        </form>
+            <div className="form-group">
+              <label htmlFor="assignTo">Assign To</label>
+              <input
+                type="text"
+                id="assignTo"
+                name="assignTo"
+                value={formData.assignTo}
+                onChange={handleChange}
+                placeholder="johndoe@gmail.com"
+                onBlur={handleAssignTo}
+                list={"suggestion"}
+                autoComplete="false"
+              />
+              <datalist id="suggestion">
+                {userEmails.length > 0 &&
+                  userEmails.map((user, index) => {
+                    return (
+                      <option key={index} value={user.email}>
+                        {user.name}
+                      </option>
+                    );
+                  })}
+              </datalist>
+              <div
+                className="error-container"
+                name="assignTo_error"
+                id="assignTo-error"
+              >
+                {errorObject.assignTo_error}
+              </div>
+            </div>
+            <button type="submit">
+              {loading ? (
+                <Spinner color={"#fff"} height={"20"} width={"20"} />
+              ) : (
+                "Submit"
+              )}
+            </button>
+          </form>
+        </div>
       </div>
-    </div>
+    </Fragment>
   );
 }
