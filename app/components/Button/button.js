@@ -1,11 +1,12 @@
 import React from 'react';
 import './button.scss'
 
-function CustomButton({ text}) {
+function CustomButton({text}) {
 return (
-    <button className="custom-button">
+    <button type = "submit" className="custom-button">
     {text}
     </button>
+   
 );
 }
 
