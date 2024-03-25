@@ -4,6 +4,7 @@ import { FaLock } from "react-icons/fa";
 import { MdLocalPhone } from "react-icons/md";
 import { MdEmail } from "react-icons/md";
 import "./signup.scss";
+import CustomButton from "../Button/button";
 
 export default function SignUp() {
   const [email, setEmail] = useState("");
@@ -12,24 +13,27 @@ export default function SignUp() {
   const [confirmPassword, setConfirmPassword] = useState("");
 
   async function handleSignUp(event) {
-    event.preventDefault()
-    const response =  await fetch('http://localhost:3002/api/v1/register',{
-      method: 'POST',
-      header:{
-        'Content-Type' : 'application/json'
-      }, 
-      body : JSON.stringify({
-         email:email, phone:phone , password:password , confirmPassword:confirmPassword
-      })
-    })
+    event.preventDefault();
+    const response = await fetch("http://localhost:3002/api/v1/register", {
+      method: "POST",
+      header: {
+        "Content-Type": "application/json",
+        
+      },
+      body: JSON.stringify({
+        email: email,
+        phone: phone,
+        password: password,
+        confirmPassword: confirmPassword,
+      }),
+    });
 
     const data = await response.json();
-    console.log(data)
-    
+    console.log(data);
   }
 
   return (
-    <form onSubmit={handleSignUp}> 
+    <form onSubmit={handleSignUp}>
       <div className="container">
         <div className="leftSide">
           <div className="login-details">
@@ -80,9 +84,7 @@ export default function SignUp() {
             </div>
 
             <div>
-              <button type="submit" id="btn">
-                SIGN UP
-              </button>
+              <CustomButton text= "SIGNUP" />
             </div>
           </div>
         </div>
