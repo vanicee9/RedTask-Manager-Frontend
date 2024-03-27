@@ -1,6 +1,9 @@
+'use client'
 import { FaUserAlt, FaLock } from "react-icons/fa";
 import "./login.scss";
+import CustomButton from "../Button/button";
 function LoginForm() {
+  
  
   return (
     <div className="container">
@@ -24,7 +27,7 @@ function LoginForm() {
             </div>
 
           <div>
-            <button id="btn">LOGIN NOW</button>
+          <CustomButton text="LOGIN" />
           </div>
         </div>
 
