@@ -55,13 +55,13 @@ export default function SignUp() {
   async function handleSignUp(event) {
     event.preventDefault();
 
-    // Check for any form errors
+    
     if (formErrors.email || formErrors.confirmPassword) {
       console.log("Form contains errors. Please correct them.");
       return;
     }
 
-    // If no errors, proceed with signup
+    
     const response = await fetch("http://localhost:3002/api/v1/register", {
       method: "POST",
       headers: {

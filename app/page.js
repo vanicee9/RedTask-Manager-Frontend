@@ -1,7 +1,7 @@
-import { redirect } from "next/navigation"
+import Start from "./components/GetStartedPage/Start"
 
 export default function Home() {
   return (
-    redirect('/login', 'replace')
+    <Start/>
   )
 }
