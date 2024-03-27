@@ -3,11 +3,16 @@
   box-sizing: border-box;
 }
 
-//* NavBar Section 
-@import 'nav-style';
+.home {
+  display: flex; flex-flow: row wrap;
+  justify-content: space-evenly;
+  width: 100vw; height: 100vh;
 
-//* TaskContainer
+  //* NavBar Section 
+  @import 'nav-style';
 
-//* Tasks
+  //* TaskContainer
 
+  //* Tasks
+}
 

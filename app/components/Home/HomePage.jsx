@@ -1,6 +1,6 @@
 import React from 'react'
-import Nav from './Nav';
-import TaskContainer from './TaskContainer';
+import Nav from './NavContainer/Nav';
+import TaskContainer from './TasksContainer/TaskContainer';
 import './Styles/homeStyle.scss';
 
 const HomePage = () => {
