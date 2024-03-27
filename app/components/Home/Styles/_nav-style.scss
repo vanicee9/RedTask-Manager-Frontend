@@ -1,3 +1,46 @@
 .nav {
-  
+  @include main-box(20%);
+  display: flex; flex-flow: column wrap; justify-content: space-between;
+  padding: 1.5rem 0;
+  .user {
+    display: flex; flex-direction: row;
+    align-items: center;
+    padding-left: 15%;
+    .userPhoto {
+      font-size: 3rem;
+      margin-right: 1rem;
+    }
+  }
+  .options {
+    list-style: none;
+    li {
+      padding: 0.5rem 20%;
+      text-transform: capitalize;
+      border-right: 0.35rem solid transparent;
+      text-align: left;
+      @include clickable;
+      &:hover {
+        background-color: rgba(230, 0, 0, 0.15);
+      }
+    }
+    li.selected {
+      border-right-color: red;
+      background-color: rgba(255, 0, 0, 0.25);
+      &:hover {
+        background-color: rgba(255, 0, 0, 0.3);
+      }
+    }
+  }
+  .signout {
+    padding: 0 25%;
+    @include clickable;
+    display: inline-block;
+    color: red;
+    .icons {
+      margin-right: 0.4rem;
+    }
+    &:hover {
+      color: darkred;
+    }
+  }
 }

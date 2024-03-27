@@ -1,0 +1,19 @@
+@mixin main-box($width) {
+  $margin-tb: .7rem;
+  width: $width; height: calc(100% - (2 * $margin-tb));
+  margin: $margin-tb;
+  background-color: rgba(255, 255, 255); 
+  box-shadow: 0 0 calc($margin-tb - 0.2rem) calc($margin-tb / 100) grey, 0 0 0.3rem grey;
+  border-radius: 0.5rem;
+}
+@mixin clickable {
+  cursor: pointer; user-select: none;
+}
+@mixin hide-scroll-bars {
+  //! hiding scroll bars
+  &::-webkit-scrollbar {
+    display: none;
+  }
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}

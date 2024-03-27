@@ -1,6 +1,7 @@
 import React from 'react';
 import User from './User';
 import Options from './Options';
+import { FaSignOutAlt } from "react-icons/fa";
 
 const Nav = () => {
   return (
@@ -8,6 +9,7 @@ const Nav = () => {
       <User />
       <Options />
       <div className='signout'>
+        <FaSignOutAlt className='icons' />
         Signout
       </div>
     </div>

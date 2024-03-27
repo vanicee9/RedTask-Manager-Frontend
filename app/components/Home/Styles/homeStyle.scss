@@ -1,18 +1,32 @@
+@import 'mixin';
+
 * {
   margin: 0; padding: 0;
   box-sizing: border-box;
 }
+:root {
+  size: 62.5%;
+}
+*::selection {
+  background-color: red; color: white;
+}
 
 .home {
   display: flex; flex-flow: row wrap;
-  justify-content: space-evenly;
+  justify-content: space-around;
   width: 100vw; height: 100vh;
 
   //* NavBar Section 
   @import 'nav-style';
 
   //* TaskContainer
+  @import 'task-container';
 
-  //* Tasks
+}
+
+.icons {
+  font-size: 1.3rem;
+  margin-right: 0.7rem;
+  vertical-align: text-bottom;
 }
 

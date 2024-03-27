@@ -1,0 +1,46 @@
+.task-container {
+  @include main-box(75%);
+  padding: 2rem;
+  .task-container-top {
+    display: flex; flex-direction: row; justify-content: space-between;
+    height: 10%;
+    .selected-name {
+      font-size: 2rem; font-family: monospace; font-weight: 600;
+      color: red;
+    }
+    .add-more {
+      .icons {
+        font-size: 1.8rem;
+        border-radius: 50%;
+        &:hover {
+          filter: drop-shadow(0 0 2px red);
+        }
+        @include clickable;
+      }
+    }
+  }
+  .progress {
+    display: flex; flex-direction: row;
+    overflow: hidden; border-radius: 1rem;
+    background-color: rgba(0, 0, 255, 0.2);
+    margin: 0.5rem 0;
+    .done {
+      background-color: lime;
+      width: 30%;
+      padding: 0.2rem 0;
+      &:hover {
+        background-color: limegreen;
+      }
+    }
+  }
+  .main-container {
+    margin: 2rem 0 1rem; padding: 0.5rem;
+    display: flex; flex-flow: row wrap; justify-content: space-between;
+    overflow: hidden scroll;
+    height: 85%;
+
+    @include hide-scroll-bars;
+    @import 'task';
+  }
+
+}
