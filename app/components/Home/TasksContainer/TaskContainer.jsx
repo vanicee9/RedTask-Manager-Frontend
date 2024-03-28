@@ -21,7 +21,7 @@ const TaskContainer = ({data, filterType}) => {
   return (
     <div className='task-container'>
       <div className="task-container-top">
-        <div className="selected-name">All Tasks</div>
+        <div className="selected-name">{filterType}</div>
         <div className="add-more"><MdAddCircleOutline className='icons'/></div>
       </div>
       <div className="progress">
