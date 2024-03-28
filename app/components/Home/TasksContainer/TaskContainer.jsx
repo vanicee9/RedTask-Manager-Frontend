@@ -1,8 +1,23 @@
-import React from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { MdAddCircleOutline } from "react-icons/md";
-import Task from './Task';
+import Task from './TaskCard';
 
-const TaskContainer = () => {
+const TaskContainer = ({data, filterType}) => {
+  const [filteredData, setFilteredData] = useState([]);
+
+  useEffect(() => {
+    if (filterType=="all tasks")
+      setFilteredData(data);
+    else
+      setFilteredData(data.filter(e => e.status===filterType));
+  }, [filterType]);
+
+  const showTasks = () => {
+    return (
+      filteredData.map((e,i) => <Task data={e} key={i}/>)
+    )
+  };
+  
   return (
     <div className='task-container'>
       <div className="task-container-top">
@@ -13,26 +28,7 @@ const TaskContainer = () => {
         <div className="done"></div>
       </div>
       <div className="main-container">
-        <Task />
-        <Task />
-        <Task />
-        <Task />
-        <Task />
-        <Task />
-        <Task />
-        <Task />
-        <Task />
-        <Task />
-        <Task />
-        <Task />
-        <Task />
-        <Task />
-        <Task />
-        <Task />
-        <Task />
-        <Task />
-        <Task />
-        <Task />
+        {showTasks()}
       </div>
     </div>
   )

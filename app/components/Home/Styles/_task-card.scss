@@ -1,20 +1,31 @@
 .task {
-  width: 220px;
+  width: 220px; height: fit-content;
   box-shadow: 0 0 0.5rem 0.1rem rgba(80, 80, 80, 0.5);
   padding: 1rem; margin: 0.8rem 0;
   border-radius: 1rem;
+  margin: 0.7rem;
   .title {
     font-weight: 600; font-size: 14px;
     text-overflow: ellipsis;
     margin-bottom: 0.5rem;
+    @include line-shown(2);
   }
   .description {
-    font-weight: 500; font-size: 12px;
-    text-overflow: ellipsis;
-    height: 5rem;
+    font-weight: 500; font-size: 12px; 
+    margin-bottom: 0.5rem; 
+    @include line-shown(5);
   }
   .date {
     font-size: 12px; font-weight: 600;
+    display: flex; align-items: center;
+    margin: 0 0 0.7rem;
+    .to-date {
+      margin: 0 .1rem;
+      border-radius: 1rem;
+      flex-grow: 1;
+      height: .3rem;
+      background-color: purple;
+    }
   }
   .bottom {
     display: flex; flex-direction: row; 
@@ -24,12 +35,20 @@
       font-size: 12px; font-weight: 700;
       padding: 0.4rem 0.6rem;
       border-radius: 1rem;
-      background-color: yellow;
-      &[data-status^='C'] {
+      background-color: lightgray;
+      text-transform: capitalize;
+      @include clickable;
+      &[data-status^='c'] {
         background-color: limegreen;
       }
-      &[data-status^='I'] {
+      &[data-status^='f'] {
         background-color: orangered;
+      }
+      &[data-status^='i'] {
+        background-color: steelblue;
+      }
+      &[data-status^='n'] {
+        background-color: yellow;
       }
     }
     .task-buttons {
